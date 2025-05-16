@@ -1,13 +1,11 @@
 spring:
   application:
-    name: order-service
-
+    name: user-service
 
   datasource:
-    url: jdbc:mysql://46.101.162.231:3306/order-service
+    url: jdbc:mysql://46.101.162.231:3306/user-service
     username: miracle
     password: miracle
-    driver-class-name: com.mysql.jdbc.Driver
 
   data:
     jdbc:
