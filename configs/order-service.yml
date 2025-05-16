@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Order-Service
+    name: order-service
 
 
   datasource:
@@ -21,3 +21,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 0

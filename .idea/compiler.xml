@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ConfigServer" />
         <module name="EurekaDiscoveryServer" />
+        <module name="GatewayService" />
       </profile>
       <profile name="Annotation profile for OrderService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -24,6 +25,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ConfigServer" options="-parameters" />
       <module name="EurekaDiscoveryServer" options="-parameters" />
+      <module name="GatewayService" options="-parameters" />
       <module name="OrderService" options="-parameters" />
     </option>
   </component>
