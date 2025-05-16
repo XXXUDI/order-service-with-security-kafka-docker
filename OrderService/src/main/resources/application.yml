@@ -1,19 +1,8 @@
 spring:
   application:
-    name: Order-Service
+    name: order-service
 
 
-  datasource:
-    url: jdbc:mysql://46.101.162.231:3306
-    username: miracle
-    password: miracle
-    driver-class-name: com.mysql.jdbc.Driver
 
-  data:
-    jdbc:
-      dialect: mysql
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
+  config:
+    import: optional:configserver:http://localhost:8888
