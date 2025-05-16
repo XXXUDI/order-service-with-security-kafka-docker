@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/order-service-with-security-kafka-docker.iml" filepath="$PROJECT_DIR$/.idea/order-service-with-security-kafka-docker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/order-service-with-security.iml" filepath="$PROJECT_DIR$/order-service-with-security.iml" />
     </modules>
   </component>
 </project>

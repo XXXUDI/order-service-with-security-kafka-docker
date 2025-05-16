@@ -1,1 +1,14 @@
-spring.application.name=ConfigServer
+spring:
+  application:
+    name: Config-Server # Service Name in Eureka Server
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/XXXUDI/order-service-with-security-kafka-docker.git # Url to gitHub repo.
+          search-paths: configs/* # You can find all configurations in 'configs' folder.
+
+
+server:
+  port: 8888 # All configs will be available in localhost:8888/<app-name>-<profile>.<format>
