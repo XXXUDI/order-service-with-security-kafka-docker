@@ -7,8 +7,14 @@ spring:
       server:
         git:
           uri: https://github.com/XXXUDI/order-service-with-security-kafka-docker.git # Url to gitHub repo.
-          search-paths: configs/* # You can find all configurations in 'configs' folder.
+          search-paths: configs    # You can find all configurations in 'configs' folder.
+          default-label: main     # Select branch main
 
+
+logging:
+  level:
+    org.springframework.cloud.config: DEBUG
+    org.springframework.web: DEBUG
 
 server:
   port: 8888 # All configs will be available in localhost:8888/<app-name>-<profile>.<format>
