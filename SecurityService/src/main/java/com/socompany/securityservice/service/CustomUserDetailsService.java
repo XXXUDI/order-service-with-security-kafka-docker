@@ -2,6 +2,7 @@ package com.socompany.securityservice.service;
 
 import com.socompany.securityservice.dto.UserDto;
 import feign.FeignException;
+import feign.RequestInterceptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Loading user by username: {}", username);
-        try{
+        try {
+            RequestInterceptor interceptor = requestTemplate -> requestTemplate.header("X-Internal-Call", "true");
             UserDto userDto = userServiceClient.getUserByUsername(username);
             List<GrantedAuthority> authorities = userDto.getRoles().stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))

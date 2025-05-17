@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -24,30 +23,33 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            logger.info("Request: {}", exchange.getRequest().getURI());
             ServerHttpRequest request = exchange.getRequest();
             String authHeader = request.getHeaders().getFirst("Authorization");
+            String path = request.getURI().getPath();
 
-            // If Request don`t have JWToken:
+            // Исключение для запросов к /api/users от SecurityService (внутренние вызовы)
+            if (path.startsWith("/api/users") && !request.getHeaders().containsKey("X-Internal-Call")) {
+                logger.info("Applying JWT filter to: {}", path);
+            } else {
+                logger.info("Skipping JWT filter for: {}", path);
+                return chain.filter(exchange);
+            }
+
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 logger.info("Request don`t have JWT Token");
-                // Set response as UNAUTHORIZED
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
 
-            // Get JWT Token
             String token = authHeader.substring(7);
             try {
                 logger.info("Token: {}", token);
-                // Parsing to get Claims (Roles)
                 Claims claims = Jwts.parser()
                         .setSigningKey("SecretKey".getBytes())
                         .build()
                         .parseClaimsJws(token)
                         .getBody();
 
-                // Add roles to headers for microservices
                 ServerHttpRequest modifiedRequest = request.mutate()
                         .header("X-Roles", claims.get("roles").toString())
                         .build();
@@ -62,6 +64,5 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
 
     public static class Config {}
 }
-
 
 

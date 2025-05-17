@@ -5,6 +5,10 @@ spring:
   application:
     name: security-service
 
+logging:
+  level:
+    com.socompany.securityservice.client.UserServiceClient: DEBUG
+
 eureka:
   client:
     serviceUrl:
