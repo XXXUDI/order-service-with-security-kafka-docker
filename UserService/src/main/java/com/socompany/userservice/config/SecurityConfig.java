@@ -25,9 +25,11 @@ public class SecurityConfig {
         return http
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Разрешаем доступ к /api/users/** для внутренних запросов
+                        // Enable access to all /api/users/** requests
                         .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
-                        // Все остальные запросы требуют аутентификации
+                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll() // Access to swagger-ui
+                        // Other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

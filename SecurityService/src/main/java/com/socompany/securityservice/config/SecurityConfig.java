@@ -52,7 +52,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Укажи фронтенд
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // <- Put UI here
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -66,6 +66,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll() // Access to '/login' without auth.
+                        .requestMatchers("swagger-ui/**").permitAll() // Access to swagger ui
                         .anyRequest().authenticated() // Another requests requires auth.
                 )
                 .sessionManagement(session -> session

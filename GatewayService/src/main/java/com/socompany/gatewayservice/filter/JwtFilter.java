@@ -27,7 +27,7 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
             String authHeader = request.getHeaders().getFirst("Authorization");
             String path = request.getURI().getPath();
 
-            // Исключение для запросов к /api/users от SecurityService (внутренние вызовы)
+            // Skip request to /api/users (For registration and Getting userDto)
             if (path.startsWith("/api/users") && !request.getHeaders().containsKey("X-Internal-Call")) {
                 logger.info("Applying JWT filter to: {}", path);
             } else {
