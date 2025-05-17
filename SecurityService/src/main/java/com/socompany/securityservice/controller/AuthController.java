@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -29,10 +30,12 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final Key SECRET_KEY;
 
     public AuthController(AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
     @PostMapping("/login")
@@ -52,7 +55,7 @@ public class AuthController {
                         .collect(Collectors.toList()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(Keys.hmacShaKeyFor("SecretKey".getBytes()), SignatureAlgorithm.HS512)
+                .signWith(SECRET_KEY, SignatureAlgorithm.HS512)
                 .compact();
 
         return ResponseEntity.ok(new JwtResponse(jwt));
