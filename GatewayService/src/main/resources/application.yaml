@@ -2,5 +2,26 @@ spring:
   application:
     name: gateway-service
 
-  config:
-    import: optional:configserver:http://localhost:8888
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: user-service
+            uri: lb://user-service
+            predicates:
+              - Path=/api/users/**
+            filters:
+              - JwtFilter
+
+          - id: security-service
+            uri: lb://security-service
+            predicates:
+              - Path=/login
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8080
