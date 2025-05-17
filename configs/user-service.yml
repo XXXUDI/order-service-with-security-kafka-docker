@@ -22,7 +22,7 @@ eureka:
 
     instance:
       prefer-ip-address: true
-      instance-id: ${spring.application.name}:${random.int[1,999]}
+      instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}:${random.int[1,9999]}
 
 server:
   port: 0

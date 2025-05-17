@@ -6,13 +6,11 @@ spring:
     gateway:
       mvc:
         routes:
-          # Более конкретный маршрут для регистрации (без JwtFilter)
           - id: user-service-register
             uri: lb://user-service
             predicates:
-              - Path=/api/users/register
+              - Path=/api/users/register,/api/users/register/
 
-          # Общий маршрут для остальных запросов к user-service (с JwtFilter)
           - id: user-service
             uri: lb://user-service
             predicates:
@@ -20,20 +18,23 @@ spring:
             filters:
               - JwtFilter
 
-          # Маршрут для login
           - id: security-service
             uri: lb://security-service
             predicates:
-              - Path=/login
+              - Path=/login,/login/
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+    instance:
+      prefer-ip-address: true
+      instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}:${random.int[1,9999]}
 
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.loadbalancer: DEBUG
 
 server:
   port: 8080
