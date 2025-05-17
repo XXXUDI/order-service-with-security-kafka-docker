@@ -9,9 +9,14 @@ spring:
           - id: user-service
             uri: lb://user-service
             predicates:
-              - Path=/user/**
+              - Path=/api/users/**
             filters:
               - JwtFilter
+
+          - id: security-service
+            uri: lb://security-service
+            predicates:
+                - Path=/**
 
 eureka:
   client:
