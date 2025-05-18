@@ -1,5 +1,6 @@
 package com.socompany.userservice.persistent;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +14,7 @@ import java.util.List;
 @Setter
 @Entity
 public class User extends BaseEntity {
+    @Column(unique = true)
     private String username;
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)

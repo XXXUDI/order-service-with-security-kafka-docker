@@ -25,9 +25,11 @@ public class SecurityConfig {
         return http
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Enable access to all /api/users/** requests
+                        // Enable access to all GET & POST /api/users/** requests
                         .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**").permitAll() // Access to swagger-ui
                         // Other requests require authentication
                         .anyRequest().authenticated()

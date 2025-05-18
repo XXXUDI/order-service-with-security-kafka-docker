@@ -1,40 +1,46 @@
 spring:
   application:
-    name: gateway-service
+    name: Api-Gateway
 
   cloud:
     gateway:
-      mvc:
-        routes:
-          - id: user-service-register
-            uri: lb://user-service
-            predicates:
-              - Path=/api/users/register,/api/users/register/
+      discovery:
+        locator:
+          enabled: true  # Включаем автоматическое обнаружение сервисов
+          lower-case-service-id: true  # Приводим имена сервисов к нижнему регистру
+      routes:
+        - id: security-service-login
+          uri: lb://security-service
+          predicates:
+            - Path=/login,/login/
 
-          - id: user-service
-            uri: lb://user-service
-            predicates:
-              - Path=/api/users/**
-            filters:
-              - JwtFilter
+        - id: user-service-register
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/register,/api/users/register/
 
-          - id: security-service
-            uri: lb://security-service
-            predicates:
-              - Path=/login,/login/
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - JwtFilter
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
-    instance:
-      prefer-ip-address: true
-      instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}:${random.int[1,9999]}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}:${random.int[1,9999]}
 
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     org.springframework.cloud.loadbalancer: DEBUG
+
+jwt:
+  secret: 47f45d9c65d5baa0d3ba046b41e300667d2b9135152c2dd272e84a858dc087897e7df61caa9e8f5c0595f539793bdffdd43c78e205e0a8a6d248e837b2e59efab3a7bb0c068074c36eb2009c036e263e450f50fd11e686d2bf78216f3316f8cf9ededb8cebbabee7fc4071db17555f4737a78ef62c1d4dee40424ac3b35ceffa7e1a51ab6e992fee9918ae2c12ab70910a34dd49bcfcc4205765a4b26fc5f91dd274461aa090d4f13d86ab6b4dc3385b4b46f88539a0812589d0b0ced2d5d0382c3a248d848e2a4d455f2999ac64c48d89a23e688451755f7978a9aadf0c8b06941bbe11cfe4c397ba55f8b3423bb3876db4a0fc4880393d7665d147f80d7c42
 
 server:
   port: 8080

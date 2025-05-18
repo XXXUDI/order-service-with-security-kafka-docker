@@ -2,6 +2,8 @@ package com.socompany.gatewayservice.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -28,10 +30,13 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
             String path = request.getURI().getPath();
 
             // Skip request to /api/users (For registration and Getting userDto)
-            if (path.startsWith("/api/users") && !request.getHeaders().containsKey("X-Internal-Call")) {
-                logger.info("Applying JWT filter to: {}", path);
-            } else {
-                logger.info("Skipping JWT filter for: {}", path);
+            if(path.endsWith("/login") || path.endsWith("/register")) {
+                logger.info("Skipping JWT Filter for: {}", path);
+                return chain.filter(exchange);
+            }
+
+            if (request.getHeaders().containsKey("X-Internal-Call")) {
+                logger.info("Skipping JWT filter for internal call: {}", path);
                 return chain.filter(exchange);
             }
 
@@ -45,12 +50,13 @@ public class JwtFilter extends AbstractGatewayFilterFactory<JwtFilter.Config> {
             try {
                 logger.info("Token: {}", token);
                 Claims claims = Jwts.parser()
-                        .setSigningKey("SecretKey".getBytes())
+                        .setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS512))
                         .build()
                         .parseClaimsJws(token)
                         .getBody();
 
                 ServerHttpRequest modifiedRequest = request.mutate()
+                        .header("X-Username", claims.getSubject())
                         .header("X-Roles", claims.get("roles").toString())
                         .build();
                 logger.info("Modified Request: {}", modifiedRequest.getURI());

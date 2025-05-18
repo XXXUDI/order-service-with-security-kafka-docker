@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(source = "roles", target = "roles")
     User toEntity(UserDto userDto);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "roles", target = "roles")
