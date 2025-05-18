@@ -17,7 +17,6 @@ public class UserDto {
     @NotBlank(message = "Password is required")
     @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
     private String password;
-    @NotEmpty(message = "Roles are required")
     private List<String> roles;
 
     public UserDto(String username, String password, List<String> roles) {

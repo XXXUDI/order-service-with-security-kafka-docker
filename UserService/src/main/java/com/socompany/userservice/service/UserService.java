@@ -43,24 +43,32 @@ public class UserService {
 
     public Optional<UserDto> updateUserByUsername(String username, UserDto userDto,
                                                   String authenticatedUser, List<String> userRoles) throws AccessDeniedException {
-        log.info("Updating user: {}", userDto);
+        log.info("Trying to find user, with username: {}", username);
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        boolean isAdmin = userRoles.contains("ADMIN");
+        log.info("User found: {}", user);
+        boolean isAdmin = userRoles.stream().anyMatch(role -> role.equals("ROLE_ADMIN"));
+        log.info("User {} is admin: {}", authenticatedUser, isAdmin);
         boolean isSelf = authenticatedUser.equals(username);
 
         if (!isAdmin && !isSelf) {
-            throw new AccessDeniedException("You are not allowed to update this user.");
+            log.error("User {} is not admin and is not self.", authenticatedUser);
+            throw new AccessDeniedException("Access denied");
         }
 
         if (userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
             userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         }
 
+        if (userDto.getUsername() != null && !userDto.getUsername().isBlank()) {
+            user.setUsername(userDto.getUsername());
+        }
+
         if (userDto.getRoles() != null && !userDto.getRoles().isEmpty()) {
+            log.info("User {} is trying to update roles.", authenticatedUser);
             if (!isAdmin) {
-                throw new AccessDeniedException("You are not allowed to update roles.");
+                log.error("User {} is trying to update roles, but is not admin.", authenticatedUser);
+                throw new AccessDeniedException("Access denied");
             }
             user.setRoles(userDto.getRoles());
         }
@@ -74,12 +82,16 @@ public class UserService {
                                         List<String> userRoles) throws AccessDeniedException {
         log.info("Deleting user: {}", username);
         var user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("User {} is trying to delete user, but is not found.", username);
+                    throw new IllegalArgumentException("User not found");
+                });
 
-        boolean isAdmin = userRoles.contains("ADMIN");
-
+        boolean isAdmin = userRoles.stream().anyMatch(role -> role.equals("ROLE_ADMIN"));
+        log.info("User {} is admin: {}", authenticatedUser, isAdmin);
         if (!isAdmin) {
-            throw new AccessDeniedException("You are not allowed to delete this user.");
+            log.error("User {} is trying to delete user, but is not admin.", authenticatedUser);
+            throw new AccessDeniedException("Access denied");
         }
 
         userRepository.delete(user);

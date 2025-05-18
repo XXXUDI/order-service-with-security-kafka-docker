@@ -32,7 +32,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-    @Value("${security.jwt.secret-key}")
+    @Value("${jwt.secret}")
     private String SECRET_KEY;
 
     public AuthController(AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {

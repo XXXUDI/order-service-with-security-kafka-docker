@@ -61,7 +61,7 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<Boolean> deleteUser(@RequestParam String username,
                                              Authentication authentication) throws AccessDeniedException {
-        log.info("Received request to delete user: {}", username);
+        log.info("Received update request for username: {} by user: {}, authorities: {}", username, authentication.getName(), authentication.getAuthorities());
         String authenticatedUser = authentication.getName();
         List<String> userRoles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
