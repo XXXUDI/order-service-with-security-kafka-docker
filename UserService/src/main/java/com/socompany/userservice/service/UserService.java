@@ -84,7 +84,7 @@ public class UserService {
         var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> {
                     log.error("User {} is trying to delete user, but is not found.", username);
-                    throw new IllegalArgumentException("User not found");
+                    return new IllegalArgumentException("User not found");
                 });
 
         boolean isAdmin = userRoles.stream().anyMatch(role -> role.equals("ROLE_ADMIN"));

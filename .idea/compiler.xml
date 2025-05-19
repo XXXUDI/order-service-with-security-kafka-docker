@@ -22,14 +22,17 @@
         </processorPath>
         <module name="UserService" />
       </profile>
-      <profile name="Annotation profile for SecurityService" enabled="true">
+      <profile name="Annotation profile for ProductService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.6.3/mapstruct-processor-1.6.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.6.3/mapstruct-1.6.3.jar" />
         </processorPath>
         <module name="OrderService" />
+        <module name="ProductService" />
         <module name="SecurityService" />
       </profile>
     </annotationProcessing>
@@ -40,6 +43,7 @@
       <module name="EurekaDiscoveryServer" options="-parameters" />
       <module name="GatewayService" options="-parameters" />
       <module name="OrderService" options="-parameters" />
+      <module name="ProductService" options="-parameters" />
       <module name="SecurityService" options="-parameters" />
       <module name="UserService" options="-parameters" />
     </option>
