@@ -2,7 +2,9 @@ package com.socompany.productservice.service;
 
 import com.socompany.productservice.mapper.ProductMapper;
 import com.socompany.productservice.persistant.dto.ProductDto;
+import com.socompany.productservice.persistant.entity.Product;
 import com.socompany.productservice.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,9 +29,13 @@ public class ProductService {
         return productRepository.findAllByOrderByNameAsc().stream().map(productMapper::toDto).toList();
     }
 
+    @Transactional
     public ProductDto saveProduct(ProductDto productDto) {
         log.info("Saving product: {}", productDto);
-        return productMapper.toDto(productRepository.save(productMapper.toEntity(productDto)));
+        Product product = productMapper.toEntity(productDto);
+        log.info("Product entity before save: id={}, version={}", product.getId(), product.getVersion());
+        if(product.getId() == null) product.setId(UUID.randomUUID());
+        return productMapper.toDto(productRepository.save(product));
     }
 
     public Optional<ProductDto> findProductById(UUID id) {
@@ -38,6 +44,7 @@ public class ProductService {
                 .map(productMapper::toDto);
     }
 
+    @Transactional
     public Optional<ProductDto> updateProduct(UUID id,
                                               ProductDto productDto,
                                               UUID authenticatedUserId,
@@ -65,6 +72,7 @@ public class ProductService {
         return result;
     }
 
+    @Transactional
     public boolean deleteProductById(UUID id, UUID authenticatedUserId, List<String> userRoles) throws AccessDeniedException {
         log.info("Deleting product: {}", id);
         var product = productRepository.findById(id)

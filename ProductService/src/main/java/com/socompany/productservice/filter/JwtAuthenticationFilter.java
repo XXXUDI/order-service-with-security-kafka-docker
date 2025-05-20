@@ -68,6 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.info("Authentication set for user: {} with authorities: {}", username, authorities);
+            log.info("Security Context: {}", SecurityContextHolder.getContext().getAuthentication());
         } catch (Exception e) {
             log.error("Invalid JWT token: {}", e.getMessage());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid JWT token");

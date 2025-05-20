@@ -38,7 +38,7 @@ public class ProductController {
                 .orElseThrow(() -> new IllegalArgumentException("Product not found")));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ProductDto> saveProduct(@Valid @RequestBody ProductDto productDto,
                                                   Authentication authentication) {
         log.info("Received request to save product: {}", productDto);
@@ -50,9 +50,9 @@ public class ProductController {
         return ResponseEntity.ok(productService.saveProduct(productDto));
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<ProductDto> updateProduct(@Valid @RequestBody ProductDto productDto,
-                                                  @RequestParam UUID id,
+                                                  @RequestParam String id,
                                                   Authentication authentication) throws AccessDeniedException {
         log.info("Received request to update product: {}", productDto);
 
@@ -63,12 +63,12 @@ public class ProductController {
 
         var user = userServiceClient.getUserByUsername(authenticatedUser);
 
-        return ResponseEntity.ok(productService.updateProduct(id, productDto, user.getId(), userRoles)
+        return ResponseEntity.ok(productService.updateProduct(UUID.fromString(id), productDto, user.getId(), userRoles)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found")));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Boolean> deleteProduct(@RequestParam UUID id,
+    @DeleteMapping("/remove")
+    public ResponseEntity<Boolean> deleteProduct(@RequestParam String id,
                                                  Authentication authentication) throws AccessDeniedException {
         log.info("Received update request for id: {} by user: {}, authorities: {}", id, authentication.getName(), authentication.getAuthorities());
         String authenticatedUser = authentication.getName();
@@ -78,7 +78,7 @@ public class ProductController {
 
         var user = userServiceClient.getUserByUsername(authenticatedUser);
 
-        return ResponseEntity.ok(productService.deleteProductById(id, user.getId(), userRoles));
+        return ResponseEntity.ok(productService.deleteProductById(UUID.fromString(id), user.getId(), userRoles));
 
     }
 }
