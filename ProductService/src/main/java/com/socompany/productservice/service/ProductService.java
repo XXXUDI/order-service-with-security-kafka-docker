@@ -2,7 +2,6 @@ package com.socompany.productservice.service;
 
 import com.socompany.productservice.mapper.ProductMapper;
 import com.socompany.productservice.persistant.dto.ProductDto;
-import com.socompany.productservice.persistant.entity.Product;
 import com.socompany.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +46,7 @@ public class ProductService {
         var product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
         log.info("Product found: {}", product);
-        boolean isAdmin = userRoles.stream().anyMatch(role -> role.equals("ROLE_ADMIN"));
+        boolean isAdmin = isAdmin(userRoles);
         boolean isOwner = product.getOwnerId().equals(authenticatedUserId);
 
         if(!isAdmin && !isOwner){
@@ -73,7 +72,7 @@ public class ProductService {
                     log.error("Product with id: {} is not found.", id);
                     return new IllegalArgumentException("Product not found");
                 });
-        boolean isAdmin = userRoles.stream().anyMatch(role -> role.equals("ROLE_ADMIN"));
+        boolean isAdmin = isAdmin(userRoles);
         boolean isOwner = product.getOwnerId().equals(authenticatedUserId);
 
         if (!isAdmin && !isOwner) {
@@ -84,6 +83,10 @@ public class ProductService {
         productRepository.flush();
         log.info("Product deleted.");
         return true;
+    }
+
+    boolean isAdmin(List<String> userRoles) {
+        return userRoles.stream().anyMatch(role -> role.equals("ROLE_ADMIN"));
     }
 
 }

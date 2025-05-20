@@ -8,9 +8,7 @@ import java.util.UUID;
 
 @Data
 public class ProductDto {
-    @NotNull
     private UUID id;
-    @NotNull
     private UUID ownerId;
     @NotNull @Size(min = 3, max = 20)
     private String name;

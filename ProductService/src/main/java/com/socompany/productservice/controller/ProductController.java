@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequestMapping("/api/product")
 @RequiredArgsConstructor
@@ -38,8 +39,14 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> saveProduct(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> saveProduct(@Valid @RequestBody ProductDto productDto,
+                                                  Authentication authentication) {
         log.info("Received request to save product: {}", productDto);
+        String authenticatedUser = authentication.getName();
+        var user = userServiceClient.getUserByUsername(authenticatedUser);
+        log.info("User found: {}", user);
+        productDto.setOwnerId(user.getId());
+
         return ResponseEntity.ok(productService.saveProduct(productDto));
     }
 

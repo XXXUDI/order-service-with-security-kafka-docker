@@ -23,7 +23,9 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/product/create").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/product/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/product/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

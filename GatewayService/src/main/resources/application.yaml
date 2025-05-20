@@ -26,6 +26,19 @@ spring:
           filters:
             - JwtFilter
 
+        - id: product-service-get-methods
+          uri: lb://product-service
+          predicates:
+            - Method=GET
+            - Path=/api/product/**
+
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - JwtFilter
+
 eureka:
   client:
     service-url:
