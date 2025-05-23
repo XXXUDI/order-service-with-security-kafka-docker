@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@Deprecated // This class is not usable.
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${jwt.secret}")

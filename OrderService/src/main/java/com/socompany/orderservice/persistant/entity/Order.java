@@ -14,7 +14,6 @@ import java.util.UUID;
 public class Order extends BaseEntity {
     private String deliveryAddress; // For example
     private String paymentMethod;
-
-    private Inventory inventory; // Contain
+    private UUID inventoryId;
 }
 

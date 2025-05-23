@@ -26,55 +26,47 @@ public class InventoryController {
         this.userServiceClient = userServiceClient;
         this.inventoryService = inventoryService;
     }
+// ----------------------------------------------------------------------------------------------------- //
 
-    @GetMapping
-    public ResponseEntity<Inventory> getUserInventoryById(Authentication authentication) {
-        log.info("Received request to get inventory by user: {}", authentication.getName());
-        UserDto user = userServiceClient.getUserByUsername(authentication.getName());
-        return ResponseEntity.ok(inventoryService.getInventoryByUserId(user.getUserId())
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Inventory> getUserInventoryById(@PathVariable UUID userId) {
+        return ResponseEntity.ok(inventoryService.getInventoryByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
 
-    // This function will be used to add one Product per request to user Inventory
     @PostMapping("/add")
-    public ResponseEntity<Inventory> addProductToUserInventory(Authentication authentication,
-                                                UUID productId) {
-        log.info("Received request to add product to inv. by user: {}", authentication.getName());
-        UserDto user = userServiceClient.getUserByUsername(authentication.getName());
-        inventoryService.getInventoryByUserId(user.getUserId()).ifPresent(inventory -> {
+    public ResponseEntity<Inventory> addProductToUserInventory(@RequestParam UUID userId,
+                                                               @RequestParam UUID productId) {
+        inventoryService.getInventoryByUserId(userId).ifPresent(inventory -> {
             inventory.getProductIds().add(productId);
-            inventory.setUserId(user.getUserId());
+            inventory.setUserId(userId);
             inventoryService.saveOrUpdateInventory(inventory);
         });
 
-        return ResponseEntity.ok(inventoryService.getInventoryByUserId(user.getUserId())
+        return ResponseEntity.ok(inventoryService.getInventoryByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
     }
 
     @DeleteMapping("/remove/inventory")
-    public ResponseEntity<Inventory> removeUserInventory(Authentication authentication) {
-        log.info("Received request to delete inventory by user: {}", authentication.getName());
-        UserDto user = userServiceClient.getUserByUsername(authentication.getName());
-
-        if(!inventoryService.getInventoryByUserId(user.getUserId()).isPresent()) {
+    public ResponseEntity<Void> removeUserInventory(@RequestParam UUID userId) {
+        if(!inventoryService.getInventoryByUserId(userId).isPresent()) {
             throw new UsernameNotFoundException("User not found");
         }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/remove/product")
-    public ResponseEntity<Inventory> removeProductFromUserInventory(Authentication authentication, UUID productId) {
-        log.info("Received request to delete product from inventory by user: {}", authentication.getName());
-        UserDto user = userServiceClient.getUserByUsername(authentication.getName());
-        inventoryService.getInventoryByUserId(user.getUserId()).ifPresent(inventory -> {
+    public ResponseEntity<Void> removeProductFromUserInventory(@RequestParam UUID userId,
+                                                               @RequestParam UUID productId) {
+
+        inventoryService.getInventoryByUserId(userId).ifPresent(inventory -> {
             inventory.getProductIds().remove(productId);
-            inventory.setUserId(user.getUserId());
+            inventory.setUserId(userId);
             inventoryService.saveOrUpdateInventory(inventory);
         });
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 
 
 }

@@ -3,6 +3,40 @@ spring:
     name: order-service
 
 
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: payment-failed-events
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+            value:
+              default:
+                type: com.socompany.orderservice.model.event.PaymentProcessedEvent
+    producer:
+      bootstrap-servers: localhost:9092, localhost:9094
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      #      retries: 5
+      properties:
+        linger:
+          ms: 0
+        request:
+          timeout:
+            ms: 5000
+        delivery:
+          timeout: 10000
+        retry:
+  #          backoff:
+  #            ms: 100
+
+
+
   datasource:
     url: jdbc:mysql://46.101.162.231:3306/order-service
     username: miracle
