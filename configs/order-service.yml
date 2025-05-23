@@ -17,6 +17,10 @@ spring:
       ddl-auto: update
     show-sql: true
 
+retryabletask:
+  timeoutInSeconds: 36000 # every 5 min.
+  limit: 100
+
 eureka:
   client:
     serviceUrl:
