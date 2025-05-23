@@ -13,6 +13,6 @@ public class OrderCreatedEvent implements Serializable {
     private UUID uuid;
     private String deliverAddress;
     private String paymentMethod;
-    private Inventory inventory;
+    private UUID inventoryId;
 
 }
