@@ -1,24 +1,22 @@
 package com.socompany.orderservice.mapper;
 
-import com.socompany.orderservice.persistant.dto.OrderDto;
+import com.socompany.orderservice.persistant.dto.OrderRequestDto;
+import com.socompany.orderservice.persistant.dto.OrderResponseDto;
 import com.socompany.orderservice.persistant.entity.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.time.Instant;
-
-@Mapper(componentModel = "spring", imports = {java.util.UUID.class, Instant.class})
+@Mapper(componentModel = "spring")
 public interface OrderMapper {
 
+    @Mapping(source = "deliverAddress", target = "deliveryAddress")
+    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target = "inventoryId", ignore = true)
+    Order toEntity(OrderRequestDto dto);
 
-//    @Mapping(target = "id", expression = "java(order.getId() != null ? order.getId() : UUID.randomUUID())")
-//    @Mapping(target = "version", constant = "0")
-//    @Mapping(target = "createdAt", expression = "java(Instant.now())")
-//    @Mapping(target = "updatedAt", expression = "java(Instant.now())")
-
-
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "inventoryId", target = "inventoryId")
-    OrderDto toDto(Order order);
-
+    @Mapping(source = "deliveryAddress", target = "deliverAddress")
+    @Mapping(source = "id", target = "uuid")
+    @Mapping(target = "inventory", ignore = true)
+    OrderResponseDto toDto(Order order);
 }
+

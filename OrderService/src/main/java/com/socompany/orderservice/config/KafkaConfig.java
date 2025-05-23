@@ -1,8 +1,6 @@
 package com.socompany.orderservice.config;
 
 import com.socompany.orderservice.event.OrderCreatedEvent;
-import com.socompany.orderservice.persistant.dto.OrderDto;
-import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
